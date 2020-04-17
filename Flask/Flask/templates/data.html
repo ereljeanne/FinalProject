@@ -1,0 +1,25 @@
+﻿{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>{{ title }}.</h2>
+<h3>{{ message }}</h3>
+<h4>
+    a job is the base to the life of every human.
+    if you wouldn't have a job you couldn't provide for you
+    and your family, which will make it hard for you to live
+    a good and respectful life. all over the world people look for jobs
+    so they could provide for themselves and for their family, but for
+    every job there are different conditions, and different needs of the work
+    place from the employee. some jobs are more suited for man while
+    other are more suited for woman, some jobs demand full education while
+    other jobs accept employee with partial education. in the data set I
+    worked on oll of those condition appear, but the one that has caught
+    my eye the most is the conditiond of religion. which is why I explored
+    this data set to see if there is favoritism of religions in work places.
+</h4>
+
+<a href="{{ url_for('dataset1') }}">DataSet1</a>
+
+
+{% endblock %}

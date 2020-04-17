@@ -34,6 +34,7 @@ from wtforms import ValidationError
 
 
 from Flask.Models.QureyFormStructure import QueryFormStructure 
+from Flask.Models.QureyFormStructure import LoginFormStructure 
 from Flask.Models.QureyFormStructure import UserRegistrationFormStructure 
 
 ###from DemoFormProject.Models.LocalDatabaseRoutines import IsUserExist, IsLoginGood, AddNewUser 
@@ -102,14 +103,49 @@ def register():
         repository_name='Pandas',
         )
 
-@app.route('/data model')
-def dataset():
-    """Renders the about page."""
+@app.route('/login', methods=['GET', 'POST'])
+def Login():
+    form = LoginFormStructure(request.form)
+
+    if (request.method == 'POST' and form.validate()):
+        if (db_Functions.IsLoginGood(form.username.data, form.password.data)):
+            flash('Login approved!')
+            #return redirect('<were to go if login is good!')
+        else:
+            flash('Error in - Username and/or password')
+   
     return render_template(
-        'dataset.html',
-        title='My DataSet',
+        'login.html', 
+        form=form, 
+        title='Login to data analysis',
+        year=datetime.now().year,
+        repository_name='Pandas',
+        )
+
+@app.route('/data')
+def data():
+    """Renders the data page."""
+
+    return render_template(
+        'data.html',
+        title='My Dataset',
         year=datetime.now().year,
         message='נתוני דרושי עבודה'
     )
 
+@app.route('/dataset1')
+def dataset1():
+    pd.options.display.max_rows = 100
+    df = pd.read_csv(path.join(path.dirname(__file__), 'static/Data/dataSet1.csv'))
 
+    raw_data_table = df.to_html(classes = 'table table-hover')
+
+    """Renders the dataset1 page."""
+   
+    return render_template(
+        'dataset1.html',
+        title= 'this is Data Set 1 page',
+        raw_data_table = raw_data_table,
+        year = datetime.now().year,
+        message= 'In this page I will display the dataset I worked on in this project'
+        )

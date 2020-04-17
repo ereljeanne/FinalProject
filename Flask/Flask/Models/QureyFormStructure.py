@@ -43,6 +43,7 @@ class LoginFormStructure(FlaskForm):
 
 
 
+
 ## This class have the fields of a registration form
 ##   This form is where the user can register himself. It will have sll the information
 ##   we want to save on a user (general information) and the username ans PW the new user want to have
@@ -56,10 +57,10 @@ class LoginFormStructure(FlaskForm):
 ##   the 'submit' button - the button the user will press to have the 
 ##                         form be "posted" (sent to the server for process)
 class UserRegistrationFormStructure(FlaskForm):
-    FirstName  = StringField('First name:  ' , validators = [DataRequired()])
-    LastName   = StringField('Last name:  ' , validators = [DataRequired()])
-    PhoneNum   = StringField('Phone number:  ' , validators = [DataRequired()])
-    EmailAddr  = StringField('E-Mail:  ' , validators = [DataRequired()])
+    FirstName  = StringField('First name:  ' , [validators.Length(min=2)])
+    LastName   = StringField('Last name:  '  , [validators.Length(min=2)])
+    PhoneNum   = StringField('Phone number:  ')
+    EmailAddr  = StringField('E-Mail:  '  , [validators.Email()])
     username   = StringField('User name:  ' , validators = [DataRequired()])
     password   = PasswordField('Pass word:  ' , validators = [DataRequired()])
     submit = SubmitField('Submit')
