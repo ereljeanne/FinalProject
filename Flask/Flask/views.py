@@ -15,9 +15,14 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 
+
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from Flask.Models.plot_service_functions import plot_to_img
+
+
 
 import json 
 import requests
@@ -135,17 +140,46 @@ def data():
 
 @app.route('/dataset1')
 def dataset1():
-    pd.options.display.max_rows = 100
     df = pd.read_csv(path.join(path.dirname(__file__), 'static/Data/dataSet1.csv'))
 
-    raw_data_table = df.to_html(classes = 'table table-hover')
+    raw_data_table = df.sample(10).to_html(classes = 'table table-hover')
+
 
     """Renders the dataset1 page."""
    
     return render_template(
         'dataset1.html',
-        title= 'this is Data Set 1 page',
+        title= 'In this page I will display the dataset I worked on in this project',
         raw_data_table = raw_data_table,
         year = datetime.now().year,
-        message= 'In this page I will display the dataset I worked on in this project'
+        message= 'these are 10 random lines from my dataset'
         )
+
+@app.route('/dataqurey' , methods = ['GET' , 'POST'])
+def dataqurey():
+    df = pd.read_csv(path.join(path.dirname(__file__), 'static/Data/dataSet1.csv'))
+    df = df.drop(['District', 'Age group', 'Gender', 'Education', 'Disability', 'Jobseekers', 'Hh', 'Non academic unemployment', 'Newcomers', 'Newcomers that got fired', 'Academic unemployment'], 1)
+    df.rename(columns={ df.columns[4]: "c" }, inplace = True)
+    df.rename(columns={ df.columns[3]: "a" }, inplace = True)
+    df.rename(columns={ df.columns[2]: "b" }, inplace = True)
+    df.rename(columns={ df.columns[1]: "Religion" }, inplace = True)
+    df = df.drop(['a', 'b', 'c'], 1)
+    df['My new column'] = 'default value'
+    df = df.set_index(['Religion', 'Month'])
+    df = df.sort_values(by='Religion')
+    df = df.groupby(['Religion', 'Month']).count()
+    df = df.loc[['אחר', 'דרוזים', 'מוסלמים', 'נוצרים', 'יהודים']]
+    df = pd.DataFrame(np.random.rand(10, 5), columns=['דרוזים', 'מוסלמים', 'נוצרים', 'יהודים', 'אחר'])
+    df.plot.bar();
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    df.plot(ax = ax , kind = 'bar')
+    chart = plot_to_img(fig)
+
+    return render_template(
+        'dataqurey.html',
+        chart = chart,
+        height = "300",
+        width = "750"
+    )

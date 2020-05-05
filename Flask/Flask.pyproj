@@ -34,6 +34,9 @@
     <Compile Include="Flask\Models\LocalDatabaseRoutines.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Flask\Models\plot_service_functions.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Flask\Models\QureyFormStructure.py">
       <SubType>Code</SubType>
     </Compile>
@@ -53,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Flask\static\Data\dataSet1.csv" />
+    <Content Include="Flask\templates\dataqurey.html" />
     <Content Include="Flask\templates\dataset1.html" />
     <Content Include="Flask\templates\login.html" />
     <Content Include="Flask\templates\photos.html" />
