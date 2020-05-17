@@ -8,7 +8,14 @@
 
 
 <div id="demo" .class="collapse">
-    {{ raw_data_table | safe}}
+    {{ raw_data_table1 | safe}}
+</div>
+
+<button data-toggle="collapse" data-target="#demo">open/collaspe</button>
+
+<p> and this is the data set after I orgenized it</p>
+<div id="demo" .class="collapse">
+    {{ raw_data_table2 | safe}}
 </div>
 
 <button data-toggle="collapse" data-target="#demo">open/collaspe</button>

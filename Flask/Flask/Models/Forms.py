@@ -20,9 +20,3 @@ class CollapseForm(FlaskForm):
     name="Collapse" 
     value="Collapse"
 
-class SinglePresidentForm(FlaskForm):
-    president = SelectField('President' , validators = [DataRequired] , choices=[('dataSet1', 'dataSet1')])
-    start_date = DateField('Start Date' , format='%Y-%m-%d' , validators = [DataRequired])
-    end_date = DateField('End Date' , format='%Y-%m-%d' , validators = [DataRequired])
-    kind = SelectField('Chart Kind' , validators = [DataRequired] , choices=[('line', 'line'), ('bar', 'bar')])
-    subnmit = SubmitField('הצג')

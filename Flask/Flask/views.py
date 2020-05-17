@@ -37,14 +37,18 @@ from wtforms import Form, BooleanField, StringField, PasswordField, validators
 from wtforms import TextField, TextAreaField, SubmitField, SelectField, DateField
 from wtforms import ValidationError
 
+from Flask.Models.Forms import ExpandForm
+from Flask.Models.Forms import CollapseForm
 
 from Flask.Models.QureyFormStructure import QueryFormStructure 
 from Flask.Models.QureyFormStructure import LoginFormStructure 
-from Flask.Models.QureyFormStructure import UserRegistrationFormStructure 
+from Flask.Models.QureyFormStructure import UserRegistrationFormStructure
+from Flask.Models.QureyFormStructure import DataForm
 
-###from DemoFormProject.Models.LocalDatabaseRoutines import IsUserExist, IsLoginGood, AddNewUser 
+from Flask.Models.plot_service_functions import GetNormalDataSet
 
 
+#Home page
 @app.route('/')
 @app.route('/home')
 def home():
@@ -55,6 +59,7 @@ def home():
         year=datetime.now().year,
     )
 
+#contact page
 @app.route('/contact')
 def contact():
     """Renders the contact page."""
@@ -65,26 +70,17 @@ def contact():
         message='ways to contact me :)'
     )
 
+#About page
 @app.route('/about')
 def about():
     """Renders the about page."""
     return render_template(
         'about.html',
-        title='About',
+        title='about my projecct',
         year=datetime.now().year,
-        message='about my project:'
     )
 
-@app.route('/photos')
-def photos():
-    """Renders the about page."""
-    return render_template(
-        'photos.html',
-        title='Photos',
-        year=datetime.now().year,
-        message='דתות בישראל'
-    )
-
+#Register new user page
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = UserRegistrationFormStructure(request.form)
@@ -108,6 +104,7 @@ def register():
         repository_name='Pandas',
         )
 
+#Login registered user page
 @app.route('/login', methods=['GET', 'POST'])
 def Login():
     form = LoginFormStructure(request.form)
@@ -127,6 +124,7 @@ def Login():
         repository_name='Pandas',
         )
 
+#Data Model Page
 @app.route('/data')
 def data():
     """Renders the data page."""
@@ -137,49 +135,62 @@ def data():
         year=datetime.now().year,
         message='נתוני דרושי עבודה'
     )
-
+#DataSet Page
 @app.route('/dataset1')
 def dataset1():
-    df = pd.read_csv(path.join(path.dirname(__file__), 'static/Data/dataSet1.csv'))
+    df2 = GetNormalDataSet()
+    df1 = pd.read_csv(path.join(path.dirname(__file__), 'static/Data/dataSet1.csv'))
 
-    raw_data_table = df.sample(10).to_html(classes = 'table table-hover')
+    raw_data_table1 = df1.sample(10).to_html(classes = 'table table-hover')
+    raw_data_table2 = df2.to_html(classes = 'table table-hover')
 
 
     """Renders the dataset1 page."""
    
     return render_template(
         'dataset1.html',
-        title= 'In this page I will display the dataset I worked on in this project',
-        raw_data_table = raw_data_table,
+        title= 'In this page I am displaying the dataset I worked on in this project',
+        raw_data_table1 = raw_data_table1,
+        raw_data_table2 = raw_data_table2,
         year = datetime.now().year,
-        message= 'these are 10 random lines from my dataset'
+        message= 'these are 10 random lines from my data set on first hand'
         )
+#Data qurey page
+@app.route('/Data_Qurey' , methods = ['GET' , 'POST'])
+def Data_Qurey():
+    
+    raw_data_table = ''
+    #getting a normal data set
+    df = GetNormalDataSet()
+    #getting the form of the qurey
+    form = DataForm(request.form)
 
-@app.route('/dataqurey' , methods = ['GET' , 'POST'])
-def dataqurey():
-    df = pd.read_csv(path.join(path.dirname(__file__), 'static/Data/dataSet1.csv'))
-    df = df.drop(['District', 'Age group', 'Gender', 'Education', 'Disability', 'Jobseekers', 'Hh', 'Non academic unemployment', 'Newcomers', 'Newcomers that got fired', 'Academic unemployment'], 1)
-    df.rename(columns={ df.columns[4]: "c" }, inplace = True)
-    df.rename(columns={ df.columns[3]: "a" }, inplace = True)
-    df.rename(columns={ df.columns[2]: "b" }, inplace = True)
-    df.rename(columns={ df.columns[1]: "Religion" }, inplace = True)
-    df = df.drop(['a', 'b', 'c'], 1)
-    df['My new column'] = 'default value'
-    df = df.set_index(['Religion', 'Month'])
-    df = df.sort_values(by='Religion')
-    df = df.groupby(['Religion', 'Month']).count()
-    df = df.loc[['אחר', 'דרוזים', 'מוסלמים', 'נוצרים', 'יהודים']]
-    df = pd.DataFrame(np.random.rand(10, 5), columns=['דרוזים', 'מוסלמים', 'נוצרים', 'יהודים', 'אחר'])
-    df.plot.bar();
+    chart=[ ]
+    tempchart = ''
 
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    df.plot(ax = ax , kind = 'bar')
-    chart = plot_to_img(fig)
+    form.sdate.data = ''
+    form.edate.data = ''
+
+    if(request.method == 'POST'):
+        sdate = form.sdate.data
+        edate = form.edate.data
+        
+        #create a string in HTML of the dataframe as a HTML table
+        raw_data_table = df.to_html()
+
+        #make object ready for graph
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        df.plot(ax = ax , kind = 'bar')
+        tempchart = plot_to_img(fig)
+        chart.append(tempchart)
 
     return render_template(
-        'dataqurey.html',
-        chart = chart,
-        height = "300",
-        width = "750"
-    )
+        'Data_Qurey.html', 
+        form = form, 
+        raw_data_table = raw_data_table,
+        chart = tempchart,
+        title='User Data Query',
+        year=datetime.now().year,
+        message='Please enter the start and end date you choose, to analyze the database.'
+   )

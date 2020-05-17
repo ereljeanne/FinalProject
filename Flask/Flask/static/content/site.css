@@ -25,6 +25,11 @@ textarea {
     display: none;
 }
 
+.navbar-custom {
+    background-color: #000066;
+    border-color: #000066;
+}
+
 input.input-validation-error {
     border: 1px solid #b94a48;
 }
