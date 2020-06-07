@@ -46,6 +46,9 @@ from Flask.Models.QureyFormStructure import UserRegistrationFormStructure
 from Flask.Models.QureyFormStructure import DataForm
 
 from Flask.Models.plot_service_functions import GetNormalDataSet
+from Flask.Models.plot_service_functions import GetSelectedReligions
+
+db_Functions = create_LocalDatabaseServiceRoutines()
 
 
 #Home page
@@ -112,7 +115,7 @@ def Login():
     if (request.method == 'POST' and form.validate()):
         if (db_Functions.IsLoginGood(form.username.data, form.password.data)):
             flash('Login approved!')
-            #return redirect('<were to go if login is good!')
+            return redirect('Data_Qurey')
         else:
             flash('Error in - Username and/or password')
    
@@ -168,20 +171,35 @@ def Data_Qurey():
     chart=[ ]
     tempchart = ''
 
-    form.sdate.data = ''
-    form.edate.data = ''
+    form.religion.choices = GetSelectedReligions()
 
     if(request.method == 'POST'):
-        sdate = form.sdate.data
-        edate = form.edate.data
+
+        df = df.set_index('Religion')
+
+        religion = form.religion.data
+
         
-        #create a string in HTML of the dataframe as a HTML table
-        raw_data_table = df.to_html()
+        df_religions = df.loc[ religion ]
 
         #make object ready for graph
         fig = plt.figure()
-        ax = fig.add_subplot(111)
-        df.plot(ax = ax , kind = 'bar')
+        ax = fig.add_subplot()
+
+        #create a string in HTML of the dataframe as a HTML table
+        raw_data_table = ''
+        
+        df_graph = df_religions.groupby(['Religion', 'Month']).count()
+        df_graph.rename(columns={ df.columns[1]: "sum" }, inplace = True)
+        df_graph = df_graph.reset_index()
+        print(df_graph)
+        df_graph = df_graph.pivot_table(index='Month', columns='Religion', values='sum')
+
+        raw_data_table = df_graph.to_html()
+        
+
+
+        df_graph.plot(ax = ax, kind='bar', grid=True)
         tempchart = plot_to_img(fig)
         chart.append(tempchart)
 

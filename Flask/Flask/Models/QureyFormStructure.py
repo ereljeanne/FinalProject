@@ -7,7 +7,7 @@ from datetime import datetime
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms import Form, BooleanField, PasswordField
-from wtforms import TextField, TextAreaField, SelectField
+from wtforms import TextField, TextAreaField, SelectField, SelectMultipleField
 from wtforms.fields.html5 import DateField
 from wtforms import validators, ValidationError
 
@@ -79,8 +79,7 @@ class UserRegistrationFormStructure(FlaskForm):
 #    submit = SubmitField('Submit')
 
 class DataForm(FlaskForm):
-    sdate = DateField('Start Date' , format='%Y-%m' , validators = [DataRequired()])
-    edate = DateField('End Date' , format='%Y-%m' , validators = [DataRequired()])
+    religion = SelectMultipleField('Select Multiple:', validators = [DataRequired()] )
     submit = SubmitField('הצג')
 
 

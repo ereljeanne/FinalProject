@@ -9,8 +9,7 @@
     <div class="row">
 
         <h2>{{ title }}</h2>
-        <p>Enter the start and end date you choose, to analyze the database.</p>
-        <p>Please make sure that your chosen dates are between 2019-01 and 2019-10</p>
+        <p>Enter the religions you would like the graph to work on</p>
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for message in messages %}
@@ -29,31 +28,18 @@
             <table>
                 <tr>
                     <td>
-                        {{ form.sdate.label }}
+                        {{ form.religion.label }}
                     </td>
                     <td>
-                        {{ form.sdate }}
+                        {{ form.religion }}
                     </td>
                     <td>
-                        {% if form.sdate.errors %}
-                        <ul class="text-danger">{% for error in form.sdate.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+                        {% if form.religion.errors %}
+                        <ul class="text-danger">{% for error in form.religion.errors %}<li>{{ error }}</li>{% endfor %}</ul>
                         {% endif %}
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        {{ form.edate.label }}
-                    </td>
-                    <td>
-                        {{ form.edate }}
-                    </td>
-                    <td>
-                        {% if form.edate.errors %}
-                        <ul class="text-danger">{% for error in form.edate.errors %}<li>{{ error }}</li>{% endfor %}</ul>
-                        {% endif %}
-                    </td>
-                </tr>
-
+                
                 <tr>
                     <td></td>
                     <td class="input submit"> <input type="submit" value="Caculate"> </td>

@@ -1,4 +1,3 @@
-
 """
 Used structures and classes
 """

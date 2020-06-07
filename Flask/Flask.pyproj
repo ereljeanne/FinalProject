@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Flask\static\Data\dataSet1.csv" />
+    <Content Include="Flask\static\Data\users.csv" />
     <Content Include="Flask\static\photos\program.jpg" />
     <Content Include="Flask\static\photos\s,u,.jpg" />
     <Content Include="Flask\templates\Data_Qurey.html" />
